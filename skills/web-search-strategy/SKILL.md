@@ -67,7 +67,7 @@ Map the territory. Don't read anything yet — just collect promising URLs.
 ```
 ✅ "enterprise AI adoption trends 2026"
 ✅ "transformer architecture explained research paper"
-✅ "Lie algebra nilpotent derivation characterization"
+✅ "finite simple groups classification theorem proof"
 
 ❌ "AI trends"                          ← too vague
 ❌ "what is a transformer"              ← too basic, waste of a search
