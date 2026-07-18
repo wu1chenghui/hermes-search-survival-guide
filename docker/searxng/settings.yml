@@ -1,3 +1,16 @@
+# Hermes Search Survival Guide — SearXNG Configuration
+#
+# This is a complete, working SearXNG settings file.  Compared to the
+# upstream defaults, these are the CHANGES we made:
+#
+#   - Enabled bing (timeout: 15.0) and mojeek as the ONLY web engines
+#   - Disabled brave, duckduckgo, startpage, presearch, qwant (all dead on self-hosted)
+#   - Enabled JSON output format (disabled by default, required for Hermes)
+#   - Raised outgoing.request_timeout to 10.0 (default 3.0 is too low for bing)
+#   - secret_key intentionally commented out (see README § Known Pitfalls #4)
+#
+# A minimal version with only bing + mojeek is at skills/searxng-config/templates/settings.yml
+
 general:
   # Debug mode, only for development. Is overwritten by ${SEARXNG_DEBUG}
   debug: false

@@ -36,8 +36,7 @@ hermes-search-survival-guide/
 ├── AGENTS.md                              ← Agent auto-loads this
 ├── docker-compose.yml                     ← Hermes + SearXNG + Valkey
 ├── config/
-│   ├── config.yaml.template               ← Hermes web search config
-│   └── env.template                       ← Environment variables
+│   └── config.yaml.template               ← Hermes web search config
 ├── docker/
 │   └── searxng/
 │       └── settings.yml                   ← Full 2782-line config, working
@@ -133,7 +132,11 @@ d=json.load(sys.stdin)
 print(f'Results: {len(d.get(\"results\",[]))} | Unresponsive: {d.get(\"unresponsive_engines\",[])}')
 # Expected: 17-20 results, unresponsive list empty or presearch only
 "
+# If you get 0 results or an error, see "Known Pitfalls" below.
 ```
+
+Your Hermes container already has `SEARXNG_URL` and `search_backend: searxng` configured.
+It is now using SearXNG for all web_search calls. No further setup needed.
 
 ---
 
@@ -154,7 +157,7 @@ print(f'Results: {len(d.get(\"results\",[]))} | Unresponsive: {d.get(\"unrespons
 │   Hermes    │────▶│  searxng-core │────▶│   bing   │
 │  (Docker)   │     │   (Docker)    │     │  mojeek  │
 │             │     │    :8080      │     │  arxiv   │
-│  :9119      │     └───────┬───────┘     │   ...    │
+│             │     └───────┬───────┘     │   ...    │
 └──────┬──────┘             │             └──────────┘
        │              ┌─────▼──────┐
        │              │   valkey   │

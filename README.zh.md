@@ -35,8 +35,7 @@ hermes-search-survival-guide/
 ├── AGENTS.md                              ← AI agent 自动加载
 ├── docker-compose.yml                     ← Hermes + SearXNG + Valkey
 ├── config/
-│   ├── config.yaml.template               ← Hermes 搜索配置模板
-│   └── env.template                       ← 环境变量模板
+│   └── config.yaml.template               ← Hermes 搜索配置模板
 ├── docker/
 │   └── searxng/
 │       └── settings.yml                   ← 完整 2782 行配置，能跑
@@ -131,7 +130,11 @@ d=json.load(sys.stdin)
 print(f'结果数: {len(d.get(\"results\",[]))} | 无响应引擎: {d.get(\"unresponsive_engines\",[])}')
 # 预期: 17-20 条结果，无响应列表为空或只有 presearch
 "
+# 如果结果为 0 或报错，参见下方「已知陷阱」。
 ```
+
+你的 Hermes 容器已经配置了 `SEARXNG_URL` 和 `search_backend: searxng`。
+现在所有 web_search 调用都通过 SearXNG。不需要额外配置。
 
 ---
 
@@ -152,7 +155,7 @@ print(f'结果数: {len(d.get(\"results\",[]))} | 无响应引擎: {d.get(\"unre
 │   Hermes    │────▶│  searxng-core │────▶│   bing   │
 │  (Docker)   │     │   (Docker)    │     │  mojeek  │
 │             │     │    :8080      │     │  arxiv   │
-│  :9119      │     └───────┬───────┘     │   ...    │
+│             │     └───────┬───────┘     │   ...    │
 └──────┬──────┘             │             └──────────┘
        │              ┌─────▼──────┐
        │              │   valkey   │
