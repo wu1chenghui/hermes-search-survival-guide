@@ -1,0 +1,79 @@
+# Minimal SearXNG configuration — only engines that actually work on self-hosted instances.
+# Drop this into docker-data/searxng/config/settings.yml for a working setup.
+#
+# Full 2782-line settings.yml (with all other engines commented out) available in
+# docker/searxng/settings.yml
+
+use_default_settings: true
+
+outgoing:
+  request_timeout: 10.0
+  useragent_suffix: ""
+
+search:
+  formats:
+    - html
+    - json
+
+engines:
+  # === Web search engines (the hard part) ===
+  # Only TWO engines work reliably on self-hosted SearXNG:
+  #   bing — needs timeout ≥ 15.0
+  #   mojeek — independent index, almost never blocks
+  #
+  # All others are permanently dead on self-hosted:
+  #   brave, duckduckgo, startpage, presearch, qwant
+  #   → CAPTCHA / access denied / suspended
+
+  - name: bing
+    engine: bing
+    shortcut: bi
+    disabled: false
+    timeout: 15.0
+
+  - name: mojeek
+    engine: mojeek
+    shortcut: mjk
+    categories: [general, web]
+    disabled: false
+
+  # === Non-web engines (all safe — never trigger CAPTCHA) ===
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
+    disabled: false
+
+  - name: arxiv
+    engine: arxiv
+    shortcut: arx
+    disabled: false
+
+  - name: github
+    engine: github
+    shortcut: gh
+    disabled: false
+
+  - name: docker hub
+    engine: docker_hub
+    shortcut: dh
+    disabled: false
+
+  - name: stackoverflow
+    engine: stackoverflow
+    shortcut: so
+    disabled: false
+
+  - name: wikidata
+    engine: wikidata
+    shortcut: wd
+    disabled: false
+
+  - name: bing images
+    engine: bing_images
+    shortcut: bii
+    disabled: false
+
+  - name: bing news
+    engine: bing_news
+    shortcut: bin
+    disabled: false

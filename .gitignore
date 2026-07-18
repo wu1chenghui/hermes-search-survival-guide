@@ -1,0 +1,26 @@
+# Secrets and personal data
+.env
+*.db
+state.db
+
+# Hermes runtime data
+sessions/
+memories/
+pip-packages/
+.playwright/
+image_cache/
+audio_cache/
+logs/
+auth.json
+auth.lock
+
+# Docker volumes
+docker-data/searxng/cache/
+valkey-data/
+
+# OS files
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+.venv/

@@ -1,0 +1,10 @@
+# Rename to config.yaml and place in ~/.hermes/
+
+web:
+  # search_backend: which backend handles web_search calls
+  # Recommended: "searxng" (free, self-hosted) or "ddgs" (free, no key needed)
+  search_backend: "searxng"
+
+  # extract_backend: which backend handles web_extract calls
+  # SearXNG is search-only — use firecrawl for extraction
+  extract_backend: "firecrawl"

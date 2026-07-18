@@ -1,0 +1,35 @@
+services:
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    command: sleep infinity
+    container_name: hermes
+    restart: unless-stopped
+    volumes:
+      - ~/.hermes:/opt/data
+      - ${WORKSPACE_DIR:-.}:/workspace
+    environment:
+      - HERMES_HOME=/opt/data
+      - SEARXNG_URL=http://searxng-core:8080
+      - PYTHONPATH=/opt/data/pip-packages
+
+  searxng-core:
+    container_name: searxng-core
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    ports:
+      - "${SEARXNG_PORT:-8085}:8080"
+    volumes:
+      - ./docker-data/searxng/config/:/etc/searxng/
+      - ./docker-data/searxng/cache/:/var/cache/searxng/
+    # SEARXNG_SECRET is auto-generated on first startup — no need to set
+
+  searxng-valkey:
+    container_name: searxng-valkey
+    image: docker.io/valkey/valkey:9-alpine
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: unless-stopped
+    volumes:
+      - valkey-data:/data/
+
+volumes:
+  valkey-data:
