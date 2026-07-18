@@ -63,7 +63,7 @@ hermes-search-survival-guide/
 
 - Docker + Docker Compose
 - [Hermes Agent](https://hermes-agent.nousresearch.com) installed (`~/.hermes/`)
-- Port 8085 free (for SearXNG)
+- Port 8085 free (SearXNG) and port 9119 free (Hermes dashboard)
 
 ### 1. Clone
 
@@ -138,6 +138,10 @@ print(f'Results: {len(d.get(\"results\",[]))} | Unresponsive: {d.get(\"unrespons
 Your Hermes container already has `SEARXNG_URL` and `search_backend: searxng` configured.
 It is now using SearXNG for all web_search calls. No further setup needed.
 
+The Hermes web dashboard is available at http://localhost:9119 (not search-related —
+it's included because the Hermes container already runs it). Remove the `ports: 9119`
+line in docker-compose.yml if you don't need it or if the port conflicts.
+
 ---
 
 ## Skills Included
@@ -157,7 +161,7 @@ It is now using SearXNG for all web_search calls. No further setup needed.
 │   Hermes    │────▶│  searxng-core │────▶│   bing   │
 │  (Docker)   │     │   (Docker)    │     │  mojeek  │
 │             │     │    :8080      │     │  arxiv   │
-│             │     └───────┬───────┘     │   ...    │
+│  :9119      │     └───────┬───────┘     │   ...    │
 └──────┬──────┘             │             └──────────┘
        │              ┌─────▼──────┐
        │              │   valkey   │

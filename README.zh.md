@@ -62,7 +62,7 @@ hermes-search-survival-guide/
 
 - Docker + Docker Compose
 - 已安装 [Hermes Agent](https://hermes-agent.nousresearch.com)（`~/.hermes/` 目录存在）
-- 端口 8085 未被占用
+- 端口 8085 未被占用（SearXNG）和端口 9119 未被占用（Hermes 控制板）
 
 ### 1. 克隆
 
@@ -136,6 +136,10 @@ print(f'结果数: {len(d.get(\"results\",[]))} | 无响应引擎: {d.get(\"unre
 你的 Hermes 容器已经配置了 `SEARXNG_URL` 和 `search_backend: searxng`。
 现在所有 web_search 调用都通过 SearXNG。不需要额外配置。
 
+Hermes 网页控制板可通过 http://localhost:9119 访问（和搜索无关——只是
+Hermes 容器自带的功能）。如果不需要或端口冲突，删除 docker-compose.yml 中的
+`ports: 9119` 行即可。
+
 ---
 
 ## 包含的 Skills
@@ -155,7 +159,7 @@ print(f'结果数: {len(d.get(\"results\",[]))} | 无响应引擎: {d.get(\"unre
 │   Hermes    │────▶│  searxng-core │────▶│   bing   │
 │  (Docker)   │     │   (Docker)    │     │  mojeek  │
 │             │     │    :8080      │     │  arxiv   │
-│             │     └───────┬───────┘     │   ...    │
+│  :9119      │     └───────┬───────┘     │   ...    │
 └──────┬──────┘             │             └──────────┘
        │              ┌─────▼──────┐
        │              │   valkey   │

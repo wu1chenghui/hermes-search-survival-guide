@@ -4,6 +4,8 @@ services:
     command: sleep infinity
     restart: unless-stopped
     shm_size: 1g
+    ports:
+      - "9119:9119"    # Hermes web dashboard (optional — remove if port conflicts)
     volumes:
       - ${HOME}/.hermes:/opt/data
       - ${WORKSPACE_DIR:-.}:/workspace
@@ -11,6 +13,8 @@ services:
       - HERMES_HOME=/opt/data
       - SEARXNG_URL=http://searxng-core:8080
       - PYTHONPATH=/opt/data/pip-packages
+      - HERMES_DASHBOARD=1              # Enables the web dashboard at :9119
+      - HERMES_DASHBOARD_INSECURE=1     # HTTP mode (remove for HTTPS in production)
 
   searxng-core:
     image: docker.io/searxng/searxng:latest

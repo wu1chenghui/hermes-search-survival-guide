@@ -54,7 +54,7 @@ Set in `docker-compose.yml` (NOT `.env` alone):
 
 | Service | Image | Port | Purpose |
 |---------|-------|:----:|---------|
-| hermes | nousresearch/hermes-agent:latest | — | Main agent (no host port by default) |
+| hermes | nousresearch/hermes-agent:latest | 9119→9119 | Main agent + web dashboard |
 | searxng-core | searxng/searxng:latest | 8085→8080 | Search aggregation |
 | searxng-valkey | valkey/valkey:9-alpine | — | SearXNG cache backend |
 
