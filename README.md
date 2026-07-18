@@ -73,12 +73,30 @@ git clone https://github.com/wu1chenghui/hermes-search-survival-guide.git
 cd hermes-search-survival-guide
 ```
 
-### 2. Copy config to ~/.hermes
+### 2. Add web search config to ~/.hermes
+
+**If you already have `~/.hermes/config.yaml`** (most Hermes users do), add these
+lines under the existing content:
+
+```yaml
+web:
+  search_backend: "searxng"
+  extract_backend: "firecrawl"
+```
+
+**If starting fresh**, copy the template:
 
 ```bash
 cp config/config.yaml.template ~/.hermes/config.yaml
+```
+
+Then copy the skills:
+
+```bash
 mkdir -p ~/.hermes/skills
-cp -r skills/* ~/.hermes/skills/
+cp -r skills/hermes-web-search-debugging ~/.hermes/skills/
+cp -r skills/web-search-strategy ~/.hermes/skills/
+cp -r skills/searxng-config ~/.hermes/skills/
 ```
 
 ### 3. Copy SearXNG settings
@@ -163,6 +181,29 @@ Switch between them:
 hermes config set web.search_backend searxng   # stable, recommended
 hermes config set web.search_backend ddgs       # zero-infra fallback
 ```
+
+---
+
+## Web Extraction (web_extract)
+
+SearXNG handles `web_search` but NOT `web_extract` (SearXNG doesn't return
+full page content). The default extract backend is **Firecrawl**, which
+ships with Hermes and offers a **keyless free tier** (1 000 credits/month, no
+signup). It works out of the box — no API key needed.
+
+If you hit the free tier limit or want higher quality extraction:
+
+```bash
+# Option A: Add a Firecrawl API key
+hermes config set web.extract_backend firecrawl
+# Then add FIRECRAWL_API_KEY=fc-your-key to ~/.hermes/.env
+
+# Option B: Use the browser as fallback (always free, no key)
+# The hermes-web-search-debugging skill documents browser_navigate as a
+# drop-in replacement for web_extract on arxiv, docs.python.org, github, wikipedia.
+```
+
+Detailed diagnostics: load the `hermes-web-search-debugging` skill.
 
 ---
 

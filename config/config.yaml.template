@@ -1,4 +1,8 @@
-# Rename to config.yaml and place in ~/.hermes/
+# Add these lines to your existing ~/.hermes/config.yaml.
+# Do NOT replace your entire config — just append the web: section.
+#
+# If you don't have a config.yaml yet, copy this entire file:
+#   cp config/config.yaml.template ~/.hermes/config.yaml
 
 web:
   # search_backend: which backend handles web_search calls
@@ -6,5 +10,6 @@ web:
   search_backend: "searxng"
 
   # extract_backend: which backend handles web_extract calls
-  # SearXNG is search-only — use firecrawl for extraction
+  # Firecrawl has a keyless free tier (1 000 credits/month, no signup).
+  # SearXNG is search-only — it cannot handle web_extract.
   extract_backend: "firecrawl"

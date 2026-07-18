@@ -72,12 +72,29 @@ git clone https://github.com/wu1chenghui/hermes-search-survival-guide.git
 cd hermes-search-survival-guide
 ```
 
-### 2. 复制配置到 ~/.hermes
+### 2. 添加搜索配置到 ~/.hermes
+
+**如果你已经有 `~/.hermes/config.yaml`**（大多数 Hermes 用户都有），在现有内容下添加这几行：
+
+```yaml
+web:
+  search_backend: "searxng"
+  extract_backend: "firecrawl"
+```
+
+**如果是全新安装**，复制模板：
 
 ```bash
 cp config/config.yaml.template ~/.hermes/config.yaml
+```
+
+然后复制 skills：
+
+```bash
 mkdir -p ~/.hermes/skills
-cp -r skills/* ~/.hermes/skills/
+cp -r skills/hermes-web-search-debugging ~/.hermes/skills/
+cp -r skills/web-search-strategy ~/.hermes/skills/
+cp -r skills/searxng-config ~/.hermes/skills/
 ```
 
 ### 3. 复制 SearXNG 设置
@@ -162,6 +179,28 @@ print(f'结果数: {len(d.get(\"results\",[]))} | 无响应引擎: {d.get(\"unre
 hermes config set web.search_backend searxng   # 稳定，推荐
 hermes config set web.search_backend ddgs       # 零基础设施备用方案
 ```
+
+---
+
+## 网页内容提取 (web_extract)
+
+SearXNG 只处理 `web_search`，不处理 `web_extract`（SearXNG 不返回完整页面内容）。
+默认的提取后端是 **Firecrawl**，Hermes 自带，提供**无 key 免费层**（1000 credits/月，
+不需要注册）。开箱即用。
+
+如果用完免费额度或需要更高质量的提取：
+
+```bash
+# 方案 A：添加 Firecrawl API key
+hermes config set web.extract_backend firecrawl
+# 然后在 ~/.hermes/.env 中添加 FIRECRAWL_API_KEY=fc-your-key
+
+# 方案 B：用浏览器作为后备（始终免费，不需要 key）
+# hermes-web-search-debugging skill 中记录了 browser_navigate 作为
+# web_extract 替代方案的使用方法，适用于 arxiv、docs.python.org、github、wikipedia。
+```
+
+详细诊断：加载 `hermes-web-search-debugging` skill。
 
 ---
 
