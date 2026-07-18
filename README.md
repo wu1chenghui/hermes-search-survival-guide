@@ -176,10 +176,12 @@ This repo supports two search backends, complementary:
 | **SearXNG** | Docker (included) | ⭐⭐⭐⭐⭐ | 17-20 | Default. Zero rate limits. |
 | **ddgs** | `pip install ddgs` | ⭐⭐⭐ | 3-5 | Backup. No Docker needed. ~25% empty. |
 
-Switch between them:
-```bash
-hermes config set web.search_backend searxng   # stable, recommended
-hermes config set web.search_backend ddgs       # zero-infra fallback
+Switch between them (edit `~/.hermes/config.yaml`):
+
+```yaml
+web:
+  search_backend: "searxng"   # stable, recommended
+  # search_backend: "ddgs"     # zero-infra fallback
 ```
 
 ---
@@ -194,9 +196,9 @@ signup). It works out of the box — no API key needed.
 If you hit the free tier limit or want higher quality extraction:
 
 ```bash
-# Option A: Add a Firecrawl API key
-hermes config set web.extract_backend firecrawl
-# Then add FIRECRAWL_API_KEY=fc-your-key to ~/.hermes/.env
+# Option A: Add a Firecrawl API key to ~/.hermes/.env
+# (extract_backend: firecrawl is already the default)
+echo 'FIRECRAWL_API_KEY=fc-your-key' >> ~/.hermes/.env
 
 # Option B: Use the browser as fallback (always free, no key)
 # The hermes-web-search-debugging skill documents browser_navigate as a
@@ -231,6 +233,19 @@ silently. Fix: persist packages to `/opt/data/pip-packages/` + `PYTHONPATH`.
 Since July 2025, Cloudflare blocks AI agent traffic. `browser_navigate` and
 `web_extract` both fail silently on Cloudflare-protected sites (Indeed, Glassdoor,
 Crunchbase, etc.). Use Scrapling with Playwright Chromium as fallback.
+
+### 4. SearXNG Secret Key
+
+The `secret_key` field in `settings.yml` has been intentionally left commented out.
+SearXNG SHOULD auto-generate one on first startup, but this behavior depends on the
+Docker entrypoint script version. If you encounter session errors or CSRF rejections
+after restarting SearXNG, generate a fixed key:
+
+```bash
+# Add to docker-compose.yml under searxng-core → environment:
+#   SEARXNG_SECRET: a94a8fe5ccb19ba61c4c0873d391e987982fbbd3
+# (generate your own with: openssl rand -hex 32)
+```
 
 ---
 
