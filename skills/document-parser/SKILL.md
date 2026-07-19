@@ -36,11 +36,6 @@ version: 1.0.0
 | `formula` | boolean | true | Enable formula recognition |
 | `table` | boolean | true | Enable table recognition |
 
-### Modes
-
-- **Flash mode**: Free, no token, ≤10MB/20 pages, Markdown only
-- **Token mode**: Higher limits (≤200MB/200 pages), extra output formats. Token is in `~/.hermes/config.yaml` under `mcp_servers.mineru.env.MINERU_API_TOKEN`
-
 ## Usage Examples
 
 ```
@@ -60,10 +55,10 @@ version: 1.0.0
 → parse_documents(source="报告.docx", language="ch")
 ```
 
-## Notes
+## Critical Pitfalls
 
-- Always set `language` when you know the document language (default is Chinese `ch`)
-- For math-heavy documents, `vlm` model provides best formula accuracy
-- For scanned documents and images, set `ocr=true`
-- Token file: `/opt/data/.mineru-token`
-- Flash mode works without token but has lower limits
+1. **Language defaults to Chinese.** For English papers, always set `language="en"`. Forgetting this causes OCR to misinterpret English text as Chinese characters.
+2. **For scanned documents and images, set `ocr=true`.** Without it, MinerU skips OCR entirely and returns empty or garbled output.
+3. **Token is at `/opt/data/.mineru-token`** and configured in `~/.hermes/config.yaml` under `mcp_servers.mineru.env.MINERU_API_TOKEN`. Flash mode works without token but has lower limits (10MB/20 pages).
+
+For setup details, API endpoints, free tier quotas, and troubleshooting, see `references/integration-details.md`.
