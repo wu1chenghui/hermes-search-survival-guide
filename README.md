@@ -47,6 +47,8 @@ hermes-search-survival-guide/
 │   ├── web-search-strategy/               ← Multi-round search methodology
 │   │   ├── SKILL.md
 │   │   └── references/
+│   ├── document-parser/                    ← Parse PDF/DOCX/PPTX/XLSX/images via MinerU
+│   │   └── SKILL.md
 │   └── searxng-config/                    ← SearXNG setup (standalone)
 │       ├── SKILL.md
 │       └── templates/
@@ -150,6 +152,7 @@ line in docker-compose.yml if you don't need it or if the port conflicts.
 |-------|-------------|
 | `hermes-web-search-debugging` | Diagnose any web_search failure — 8 backends, silent fallback detection, engine health checks |
 | `web-search-strategy` | 4-phase research methodology, Cloudflare bypass via Scrapling, search budget control |
+| `document-parser` | Parse PDF, DOCX, PPTX, XLSX, images into Markdown via MinerU — with formula/table/OCR recognition |
 | `searxng-config` | Standalone SearXNG configuration guide — engine reliability table, minimal config, diagnostics |
 
 ---

@@ -46,6 +46,8 @@ hermes-search-survival-guide/
 │   ├── web-search-strategy/               ← 多轮搜索方法论
 │   │   ├── SKILL.md
 │   │   └── references/
+│   ├── document-parser/                    ← PDF/DOCX/PPTX/XLSX/图片解析 (MinerU)
+│   │   └── SKILL.md
 │   └── searxng-config/                    ← SearXNG 配置指南（独立使用）
 │       ├── SKILL.md
 │       └── templates/
@@ -148,6 +150,7 @@ Hermes 容器自带的功能）。如果不需要或端口冲突，删除 docker
 |-------|------|
 | `hermes-web-search-debugging` | 诊断任何 web_search 故障——8 个后端全覆盖、静默回退检测、引擎健康检查 |
 | `web-search-strategy` | 四阶段搜索方法论、通过 Scrapling 绕过 Cloudflare、搜索预算控制 |
+| `document-parser` | 通过 MinerU 解析 PDF/DOCX/PPTX/XLSX/图片为 Markdown——公式/表格/OCR 识别 |
 | `searxng-config` | 独立的 SearXNG 配置指南——引擎可靠性表、最小化配置、诊断命令 |
 
 ---
