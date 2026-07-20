@@ -61,4 +61,22 @@ version: 1.0.0
 2. **For scanned documents and images, set `ocr=true`.** Without it, MinerU skips OCR entirely and returns empty or garbled output.
 3. **Token is at `/opt/data/.mineru-token`** and configured in `~/.hermes/config.yaml` under `mcp_servers.mineru.env.MINERU_API_TOKEN`. Flash mode works without token but has lower limits (10MB/20 pages).
 
-For setup details, API endpoints, free tier quotas, and troubleshooting, see `references/integration-details.md`.
+## When to Load Reference Details
+
+The MCP tool auto-selects mode: if `MINERU_API_TOKEN` is set (it is — configured in
+`~/.hermes/config.yaml`), it uses Precision (vlm, higher accuracy, up to 200MB/200
+pages). Without token, it falls back to flash mode.
+
+**Prefer Precision by default** — our token gives 1000 pages/day high priority, and
+the accuracy difference matters for math-heavy papers. Only fall back to flash if:
+
+- Token call fails (rare) → remove `MINERU_API_TOKEN` env to force flash
+- You want instant results without API overhead → flash is faster (3-5s vs 8-12s)
+
+**Load `references/integration-details.md` whenever:**
+- Precision API returns errors → use the 5-layer diagnostic checklist
+- You need to call the API directly (bypass MCP) for batch uploads or debugging
+- You need to check quotas, endpoint details, or SSL workarounds
+
+To load: `skill_view(name="document-parser", file_path="references/integration-details.md")`
+For setup details, API endpoints, free tier quotas, and the 5-layer API diagnostic checklist, see `references/integration-details.md`.
