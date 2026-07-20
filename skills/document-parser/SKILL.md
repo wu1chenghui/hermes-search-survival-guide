@@ -50,7 +50,7 @@ in `~/.hermes/config.yaml` under `mcp_servers.mineru.env.OUTPUT_DIR`.
 |-----------|------|---------|-------------|
 | `file_sources` | string[] | required | Array of file paths or URLs to parse. E.g. `["paper.pdf", "https://arxiv.org/pdf/..."]` |
 | `language` | string | "ch" | Document language: en, ch, japan, korean, latin, etc. |
-| `model` | string | "vlm" | vlm (high accuracy) or pipeline (zero hallucination) |
+| `model` | string | "vlm" | vlm (high accuracy), pipeline (zero hallucination), or **MinerU-HTML** (web pages) |
 | `pages` | string | all | Page range per file, e.g. `["1-5", "1,3,5-7"]` |
 | `ocr` | boolean | false | Enable OCR for scanned documents and images |
 
@@ -68,6 +68,9 @@ in `~/.hermes/config.yaml` under `mcp_servers.mineru.env.OUTPUT_DIR`.
 
 "Read pages 5-8 of this PDF"
 → parse_documents(file_sources=["book.pdf"], pages=["5-8"], language="en")
+
+"Extract this Wikipedia article as clean Markdown"
+→ parse_documents(file_sources=["https://en.wikipedia.org/wiki/..."], model="MinerU-HTML", language="en")
 ```
 
 ## Critical Pitfalls
