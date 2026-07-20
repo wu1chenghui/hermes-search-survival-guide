@@ -16,13 +16,33 @@ version: 1.0.0
 - Common triggers: "read this", "analyze this document", "extract from", "parse this", "what's in this file"
 - Covers ALL formats MinerU supports: PDF, DOCX/DOC, PPTX/PPT, XLSX/XLS, PNG, JPG, JPEG, JP2, WEBP, GIF, BMP, HTML, plus any URL
 
-## The Tool
+## Tools
 
-`mcp_mineru_parse_documents` — converts documents into clean Markdown with:
+### `parse_documents` — primary parsing tool
+
+Converts documents into clean Markdown with:
 - LaTeX for mathematical formulas
 - HTML for tables
 - OCR for scanned documents and images (80+ languages)
 - Reading-order preserved for complex layouts
+
+### `get_ocr_languages` — list supported languages
+
+Returns all OCR language codes available (en, ch, japan, korean, latin, arabic,
+cyrillic, devanagari, etc.). Use when unsure which language code to pass, or when
+the document's language is ambiguous.
+
+### Output Behavior
+
+**Single file** (one item in `file_sources`): content returned inline in `results[0].content`.
+If the content is too large, it's saved to disk and `truncated: true` is set — in that
+case also read from `results[0].extract_path`.
+
+**Batch** (multiple items): content saved to disk only. Results contain `extract_path`
+for each file. Use `read_file` to read the output Markdown.
+
+Output directory defaults to `~/mineru-downloads`. Override with `OUTPUT_DIR` env var
+in `~/.hermes/config.yaml` under `mcp_servers.mineru.env.OUTPUT_DIR`.
 
 ### Parameters
 
