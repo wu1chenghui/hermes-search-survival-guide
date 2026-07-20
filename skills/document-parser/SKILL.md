@@ -28,31 +28,26 @@ version: 1.0.0
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `source` | string | required | File path or URL |
-| `pages` | string | all pages | Page range, e.g. "1-5" or "1,3,5-7". PDF only. |
-| `language` | string | "ch" | OCR/baseline language: en, ch, japan, korean, latin, arabic, etc. |
+| `file_sources` | string[] | required | Array of file paths or URLs to parse. E.g. `["paper.pdf", "https://arxiv.org/pdf/..."]` |
+| `language` | string | "ch" | Document language: en, ch, japan, korean, latin, etc. |
 | `model` | string | "vlm" | vlm (high accuracy) or pipeline (zero hallucination) |
+| `pages` | string | all | Page range per file, e.g. `["1-5", "1,3,5-7"]` |
 | `ocr` | boolean | false | Enable OCR for scanned documents and images |
-| `formula` | boolean | true | Enable formula recognition |
-| `table` | boolean | true | Enable table recognition |
 
 ## Usage Examples
 
 ```
 "Summarize this paper: https://arxiv.org/pdf/..."
-→ parse_documents(source=url, language="en")
+→ parse_documents(file_sources=["https://arxiv.org/pdf/..."], language="en")
 
-"What's in this scanned receipt?" (shows a JPG)
-→ parse_documents(source="receipt.jpg", ocr=true)
+"Read both reference papers"
+→ parse_documents(file_sources=["paper1.pdf", "paper2.pdf"], language="en", model="vlm")
 
-"Extract the tables from this Excel file"
-→ parse_documents(source="data.xlsx", table=true)
+"Parse scanned receipt and a Chinese document"
+→ parse_documents(file_sources=["receipt.jpg", "报告.docx"], ocr=true)
 
 "Read pages 5-8 of this PDF"
-→ parse_documents(source="book.pdf", pages="5-8", language="en")
-
-"Parse this Chinese Word document"
-→ parse_documents(source="报告.docx", language="ch")
+→ parse_documents(file_sources=["book.pdf"], pages=["5-8"], language="en")
 ```
 
 ## Critical Pitfalls
