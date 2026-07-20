@@ -1,8 +1,7 @@
 # MinerU Integration — Reference Details
 
-This file documents setup, options, quotas, and troubleshooting. It is
-reference material — not loaded on every trigger. The SKILL.md covers
-everyday usage.
+This file documents setup, options, quotas, API diagnostics, and troubleshooting.
+It is reference material — not loaded on every trigger. The SKILL.md covers everyday usage.
 
 ---
 
@@ -62,30 +61,85 @@ set in `~/.hermes/config.yaml`. The token never enters the conversation.
 | Formula/Table/OCR | ✅ | ✅ |
 | Batch | ❌ | ✅ (≤200 files) |
 
-Flash mode is sufficient for most arXiv papers (<20 pages). Token mode is
-needed for full books, theses, or when higher accuracy (vlm model) is required.
+Flash mode is sufficient for most arXiv papers (<20 pages). Token mode is needed
+for full books, theses, or when higher accuracy (vlm model) is required.
 
-## API Endpoints (for reference)
-
-These are the underlying APIs the MCP server calls. Direct use is only needed
-for debugging or if the MCP server is unavailable.
+## API Endpoints
 
 ### Agent API (flash mode, no auth)
 
+**URL mode:**
 ```
 POST https://mineru.net/api/v1/agent/parse/url
 Body: {"url": "...", "language": "en", "enable_table": true, "enable_formula": true}
-→ poll GET /parse/{task_id} → download markdown_url
+→ poll GET /parse/{task_id}
+→ download markdown_url
+```
+
+**File upload mode:**
+```
+POST https://mineru.net/api/v1/agent/parse/file
+Body: {"file_name": "paper.pdf", "language": "en", ...}
+→ returns task_id + signed upload URL
+→ PUT file bytes to signed URL
+→ poll GET /parse/{task_id}
+→ download markdown_url
 ```
 
 ### Precision API (token required)
 
+**Single task (URL-based):**
 ```
 POST https://mineru.net/api/v4/extract/task
-Header: Authorization: Bearer <token>
+Header: Authorization: Bearer ***
 Body: {"url": "...", "model_version": "vlm"}
-→ poll GET /extract/task/{task_id} → download full_zip_url (md + json)
+→ poll GET /extract/task/{task_id}
+→ download full_zip_url (md + json)
 ```
+
+**Batch file upload (local files):**
+```
+Step 1: Get signed OSS upload URLs
+  POST https://mineru.net/api/v4/file-urls/batch
+  Header: Authorization: Bearer ***
+  Body: {"files": [{"name": "paper.pdf", "data_id": "p1"}], "model_version": "vlm"}
+  → response: {"data": {"batch_id": "...", "file_urls": ["https://mineru.oss-cn-shanghai.aliyuncs.com/..."]}}
+
+Step 2: Upload files to OSS
+  PUT {file_url} with file bytes
+  If SSL EOF error: use requests.put(url, verify=False) + retry up to 3 times
+
+Step 3: Poll batch results
+  ⚠️ CORRECT endpoint (easy to miss in docs):
+  GET https://mineru.net/api/v4/extract-results/batch/{batch_id}
+
+  Response structure:
+  {
+    "data": {
+      "extract_result": [{
+        "data_id": "p1",
+        "file_name": "paper.pdf",
+        "state": "done",              ← state is nested, not at data.state
+        "full_zip_url": "https://cdn-mineru.openxlab.org.cn/..."
+      }]
+    }
+  }
+```
+
+## API Diagnostic Checklist (verified 2026-07-20)
+
+When Precision API fails, check in this order:
+
+| Layer | Check | Expected |
+|-------|-------|----------|
+| 0 Token | POST /extract/task with demo URL | code=0, returns task_id |
+| 0b Token test | POST with fake token | HTTP 401 "user token expired" |
+| 1 DNS | dig mineru.oss-cn-shanghai.aliyuncs.com | Resolves to 223.109.196.173 |
+| 2 TCP | nc -zv IP 443 | Connection succeeded |
+| 3 TLS | Python requests.head(host) | HTTP 403 (expected — no auth on GET) |
+| 4 Upload | PUT to OSS signed URL | HTTP 200. If SSL EOF, use verify=False |
+| 4b Poll | GET /extract-results/batch/{batch_id} | data.extract_result[0].state |
+| 5 Download | GET full_zip_url | ZIP file with md + json |
 
 ## Troubleshooting
 
@@ -94,8 +148,11 @@ Body: {"url": "...", "model_version": "vlm"}
 | Garbled English text in output | Language defaulted to `ch` | Set `language="en"` |
 | Empty output on scanned document | OCR not enabled | Set `ocr=true` |
 | MCP tool not appearing after config | Hermes needs restart | `docker compose restart hermes` |
-| Tool exists but returns errors | Token expired or MCP server issue | Check token at mineru.net, try flash mode (remove token env) |
-| "File too large" error | Exceeded flash mode limits (10MB/20p) | Use token mode or switch to Precision API directly |
+| **"task not found or expire"** | Wrong polling endpoint for batch | Use `/extract-results/batch/{batch_id}`, NOT `/extract/task/{batch_id}` |
+| **State always "?" in polling** | Response structure differs from single-task | Use `data.extract_result[0].state`, NOT `data.state` |
+| **OSS upload SSL EOF** | Alibaba Cloud OSS SSL quirk from this network | `requests.put(url, verify=False)` + retry up to 3 times |
+| **"failed to read file" after upload** | OSS signed URL not readable by MinerU backend | Use Agent API file upload instead, or host file on public URL |
+| Batch submit returns code=0 but no data | Token invalid or expired | Check with Layer 0 test |
 
 ## Official Resources
 
